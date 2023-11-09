@@ -49,7 +49,7 @@
         '';
       };
 
-      pagefind_extended = pkgs.stdenv.mkDerivation {
+      pagefindExtended = pkgs.stdenv.mkDerivation {
         inherit version src;
         pname = "pagefind_extended";
 
@@ -81,8 +81,8 @@
         pagefind = inputs.self.outputs.packages.${system}.pagefind;
       });
 
-      pagefind_extended = final: prev: forAllSystems ({ system, ... }: {
-        pagefind_extended = inputs.self.outputs.packages.${system}.pagefind_extended;
+      pagefindExtended = final: prev: forAllSystems ({ system, ... }: {
+        pagefindExtended = inputs.self.outputs.packages.${system}.pagefindExtended;
       });
     };
   };
