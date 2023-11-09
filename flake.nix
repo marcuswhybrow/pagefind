@@ -54,10 +54,10 @@
         pname = "pagefind_extended";
 
         meta = meta // {
-          longDescription = "Pagefind publishes two releases, pagefind and \
-          pagefind_extended. The extended release is a larger binary, but \
-          includes specialized support for indexing Chinese and Japanese \
-          pages.";
+          longDescription = "Pagefind publishes two releases, pagefind and " +
+          "pagefind_extended. The extended release is a larger binary, but " +
+          "includes specialized support for indexing Chinese and Japanese " +
+          "pages.";
         };
 
         installPhase = let
