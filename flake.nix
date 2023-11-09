@@ -4,14 +4,14 @@
 
   outputs = inputs: let
     supportedSystems = [
-      "aarch64-darwin" # 64-bit ARM macOS
-      "aarch64-linux" # 64-bit ARM Linux
-      "x86_64-darwin" # 64-bit Intel macOS
-      "x86_64-linux" # 64-bit Intel/AMD Linux
+      "aarch64-darwin"
+      "aarch64-linux"
+      "x86_64-darwin"
+      "x86_64-linux"
     ];
 
     forAllSystems = f: inputs.nixpkgs.lib.genAttrs supportedSystems (system: f {
-      inherit system ;
+      inherit system;
       pkgs = import inputs.nixpkgs { inherit system; };
     });
 
@@ -49,7 +49,7 @@
         '';
       };
 
-      pagefindExtended = pkgs.stdenv.mkDerivation {
+      pagefind_extended = pkgs.stdenv.mkDerivation {
         inherit version src;
         pname = "pagefind_extended";
 
@@ -81,8 +81,8 @@
         pagefind = inputs.self.outputs.packages.${system}.pagefind;
       });
 
-      pagefindExtended = final: prev: forAllSystems ({ system, ... }: {
-        pagefindExtended = inputs.self.outputs.packages.${system}.pagefindExtended;
+      pagefind_extended = final: prev: forAllSystems ({ system, ... }: {
+        pagefind_extended = inputs.self.outputs.packages.${system}.pagefind_extended;
       });
     };
   };
