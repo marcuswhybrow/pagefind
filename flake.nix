@@ -76,8 +76,12 @@
   } // {
     overlays = {
       default = inputs.self.outputs.overlays.pagefind;
+
       pagefind = final: prev: forAllSystems ({ system, ... }: {
         pagefind = inputs.self.outputs.packages.${system}.pagefind;
+      });
+
+      pagefind_extended = final: prev: forAllSystems ({ system, ... }: {
         pagefind_extended = inputs.self.outputs.packages.${system}.pagefind_extended;
       });
     };
