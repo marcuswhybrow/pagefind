@@ -1,20 +1,27 @@
 {
   description = "Pagefind";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
+  outputs = inputs: let
+    supportedSystems = [
+      "aarch64-darwin" # 64-bit ARM macOS
+      "aarch64-linux" # 64-bit ARM Linux
+      "x86_64-darwin" # 64-bit Intel macOS
+      "x86_64-linux" # 64-bit Intel/AMD Linux
+    ];
 
-  outputs = inputs: with inputs; inputs.flake-utils.lib.eachDefaultSystem (system: let
-    pkgs = inputs.nixpkgs.legacyPackages.${system};
+    forAllSystems = f: inputs.nixpkgs.lib.genAttrs supportedSystems (system: f {
+      inherit system ;
+      pkgs = import inputs.nixpkgs { inherit system; };
+    });
+
     getBinary = kind: version: architecture: sha256: fetchTarball {
       inherit sha256;
       url = "https://github.com/CloudCannon/pagefind/releases/download/v${version}/${kind}-v${version}-${architecture}.tar.gz";
     };
   in {
-    packages = rec {
-      default = pagefind;
+    packages = forAllSystems ({ pkgs, system }: {
+      default = inputs.self.outputs.packages.${system}.pagefind;
       pagefind = pkgs.stdenv.mkDerivation rec {
         pname = "pagefind";
         version = "1.0.3";
@@ -48,18 +55,18 @@
           cp ${binaries.pagefindExtended.${system}} $out/bin/pagefind_extended
         '';
       };
-    };
+    });
 
-    apps.pagefind_extended = {
+    apps.pagefind_extended = forAllSystems ({ system, ... }: {
       type = "app";
-      program = "${self.packages.${system}.pagefind}/bin/pagefind_extended";
-    };
-  }) // {
-    overlays = rec {
-      default = pagefind;
-      pagefind = final: prev: {
-        pagefind = packages.${system}.pagefind;
-      };
+      program = "${inputs.self.packages.${system}.pagefind}/bin/pagefind_extended";
+    });
+  } // {
+    overlays = {
+      default = inputs.self.outputs.overlays.pagefind;
+      pagefind = final: prev: forAllSystems ({ system, ... }: {
+        pagefind = inputs.self.outputs.packages.${system}.pagefind;
+      });
     };
   };
 }
