@@ -12,14 +12,7 @@
       inherit sha256;
       url = "https://github.com/CloudCannon/pagefind/releases/download/v${version}/${kind}-v${version}-${architecture}.tar.gz";
     };
-  in rec {
-    overlays = rec {
-      default = pagefind;
-      pagefind = final: prev: {
-        pagefind = packages.${system}.pagefind;
-      };
-    };
-
+  in {
     packages = rec {
       default = pagefind;
       pagefind = pkgs.stdenv.mkDerivation rec {
@@ -61,6 +54,13 @@
       type = "app";
       program = "${self.packages.${system}.pagefind}/bin/pagefind_extended";
     };
-  });
+  }) // {
+    overlays = rec {
+      default = pagefind;
+      pagefind = final: prev: {
+        pagefind = packages.${system}.pagefind;
+      };
+    };
+  };
 }
 
